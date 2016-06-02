@@ -8,8 +8,10 @@ import info.mukel.telegram.bots.v2.methods._
 import info.mukel.telegram.bots.v2.{Commands, Polling, TelegramBot}
 import model.GameSession
 import info.mukel.telegram.bots.v2.api.Implicits._
+import org.joda.time.DateTime
+
 import scala.util.{Failure, Success, Try}
-import Messages
+
 
 object BullsCowsBot extends TelegramBot with Polling with Commands {
 
@@ -40,11 +42,17 @@ object BullsCowsBot extends TelegramBot with Polling with Commands {
               val combination: List[Int] = string.map(_.toString).toList.map(_.toInt)
 
               val thisSession: GameSession = sessions.get(message.sender)
-
+              reply(thisSession.wishList.toString()) //fortest
 
               if (thisSession.isWin(combination)) {
-                api.request(SendMessage(message.chat.id, s"Congratulations, ${message.from.get.firstName}! You win!\n" +
-                  s"Moves: ${thisSession.log.length + 1}"))
+                val time = new DateTime(new DateTime().getMillis-thisSession.time.getMillis)
+                val answerToWinner =
+                  s"""Congratulations, ${message.from.get.firstName}! You win!
+                  Moves: ${thisSession.log.length + 1}
+                  Time: ${time.getMinuteOfHour} minutes; ${time.getSecondOfMinute} seconds
+                    """
+
+                api.request(SendMessage(message.chat.id, answerToWinner))
                 endGame(thisSession)
               } else {
                 thisSession.doStep(combination)
@@ -65,7 +73,7 @@ object BullsCowsBot extends TelegramBot with Polling with Commands {
 
   on("/startnewgame") { implicit msg => _ =>
     if (sessions.containsKey(msg.sender)) sessions.remove(msg.sender)
-    val session: GameSession = GameSession(msg.sender)
+    val session: GameSession = GameSession(msg.sender,new DateTime())
     sessions.put(msg.sender, session)
     reply(Messages.startNewGame)
   }
