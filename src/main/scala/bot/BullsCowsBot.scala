@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap
 import com.typesafe.config.{Config, ConfigFactory}
 import info.mukel.telegram.bots.v2.methods._
 import info.mukel.telegram.bots.v2.{Commands, Polling, TelegramBot}
-import model.GameSession
+import model.{CommandHandler, Game, GameSession}
 import info.mukel.telegram.bots.v2.api.Implicits._
 import org.joda.time.DateTime
 
@@ -42,16 +42,18 @@ object BullsCowsBot extends TelegramBot with Polling with Commands {
               val combination: List[Int] = string.map(_.toString).toList.map(_.toInt)
 
               val thisSession: GameSession = sessions.get(message.sender)
-              reply(thisSession.wishList.toString()) //fortest
+               // reply(thisSession.wishList.toString()) //fortest
 
               if (thisSession.isWin(combination)) {
+                val timeMillis = new DateTime().getMillis-thisSession.time.getMillis
                 val time = new DateTime(new DateTime().getMillis-thisSession.time.getMillis)
                 val answerToWinner =
                   s"""Congratulations, ${message.from.get.firstName}! You win!
                   Moves: ${thisSession.log.length + 1}
                   Time: ${time.getMinuteOfHour} minutes; ${time.getSecondOfMinute} seconds
                     """
-
+                val game = Game(0,message.sender, thisSession.log.length+1,timeMillis,new DateTime(),message.from.get.firstName + " " + message.from.get.lastName.get)
+                CommandHandler.saveGameToBD(game)
                 api.request(SendMessage(message.chat.id, answerToWinner))
                 endGame(thisSession)
               } else {
@@ -76,5 +78,12 @@ object BullsCowsBot extends TelegramBot with Polling with Commands {
     val session: GameSession = GameSession(msg.sender,new DateTime())
     sessions.put(msg.sender, session)
     reply(Messages.startNewGame)
+  }
+
+  on("/mystat") {
+    implicit msg => _ =>
+      val list = CommandHandler.selectYourGamesFromBD(msg.sender)
+      val statistic = CommandHandler.getYourStat(list)
+      reply(statistic)
   }
 }

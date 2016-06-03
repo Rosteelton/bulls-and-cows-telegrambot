@@ -12,7 +12,6 @@ case class GameSession(playerId: Long, time: DateTime) {
   val log = ListBuffer.empty[String]
 
   def getWishList: List[Int] = {
-
     val wish = Random.nextInt(10) :: Random.nextInt(10) :: Random.nextInt(10) :: Random.nextInt(10) :: Nil
     val countList: List[Int] = for {
       x <- wish
