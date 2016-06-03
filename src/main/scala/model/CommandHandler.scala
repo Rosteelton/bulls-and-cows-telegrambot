@@ -19,6 +19,12 @@ object CommandHandler {
    sql"select * FROM games where userId=${userId}".map(allColumns).list().apply()
   }
 
+  def SelectAllGamesFromBD: List[AllStat] = {
+sql"select userName, count(userName) as totalGames,AVG(steps) as averageSteps, AVG(time) as averageTime from games GROUP BY userName ORDER BY totalGames DESC limit 5"
+        .map(allColumnsStat).list().apply()
+
+  }
+
 def getYourStat(data: List[Game]): String = {
   data match {
     case Nil => "no data!"
@@ -31,6 +37,18 @@ def getYourStat(data: List[Game]): String = {
       s"Name: $name\nTotal games: $totalGames\nAverage steps: $averageSteps\nAverage time per game: $averageTime"
   }
 }
+
+  def getAllStat(data: List[AllStat]): List[String] = {
+
+    data match {
+      case Nil => List("no data!")
+      case _ =>
+        data.map(x =>{
+          val time = getMinutesAndSecondsFromMillis(Math.round(x.averageTime))
+          s"Name: ${x.name}\nTotal games: ${x.totalGames}\nAverage Steps: ${Math.round(x.averageSteps)}\nAverage Time: ${time}"
+        })
+    }
+  }
 
   def getMinutesAndSecondsFromMillis(millis: Long): String = {
     val date = new DateTime(millis)
@@ -47,6 +65,13 @@ def getYourStat(data: List[Game]): String = {
     time = rs.long("time"),
     date = rs.jodaDateTime("date"),
     userName = rs.string("userName")
+  )
+
+  val allColumnsStat = (rs: WrappedResultSet) => AllStat(
+    name = rs.string("userName"),
+    totalGames = rs.int("totalGames"),
+    averageSteps = rs.double("averageSteps"),
+    averageTime = rs.long("averageTime")
   )
 
 }

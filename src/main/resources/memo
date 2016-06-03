@@ -8,6 +8,7 @@ help - Show game rules!
 startnewgame - Start new game!
 step - do action (use it only after /starnewgame command)
 mystat - Show your statistics!
+allstat - Show public statistics!
 
 Id:
 nastID = 55689671

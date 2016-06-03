@@ -15,7 +15,6 @@ case class YourStat(name: String, totalGames: Int, averageSteps: Int, averageTim
     val avTime = s"$minutes min; $seconds sec"
     String.format("%-30s%-5s%-5s%-15s",name,totalGames.toString,averageSteps.toString,avTime)
   }
-
-
-
 }
+
+case class AllStat(name: String, totalGames: Int, averageSteps: Double, averageTime: Double)

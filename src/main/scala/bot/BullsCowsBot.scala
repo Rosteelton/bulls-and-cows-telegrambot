@@ -6,9 +6,10 @@ import java.util.concurrent.ConcurrentHashMap
 import com.typesafe.config.{Config, ConfigFactory}
 import info.mukel.telegram.bots.v2.methods._
 import info.mukel.telegram.bots.v2.{Commands, Polling, TelegramBot}
-import model.{CommandHandler, Game, GameSession}
+import model.{AllStat, CommandHandler, Game, GameSession}
 import info.mukel.telegram.bots.v2.api.Implicits._
 import org.joda.time.DateTime
+import scalikejdbc.WrappedResultSet
 
 import scala.util.{Failure, Success, Try}
 
@@ -85,5 +86,15 @@ object BullsCowsBot extends TelegramBot with Polling with Commands {
       val list = CommandHandler.selectYourGamesFromBD(msg.sender)
       val statistic = CommandHandler.getYourStat(list)
       reply(statistic)
+  }
+
+  on("/allstat") {
+
+    implicit msg => _ =>
+      val list: List[AllStat] = CommandHandler.SelectAllGamesFromBD
+      val statistic: List[String] = CommandHandler.getAllStat(list)
+      reply("TOP 5 PLAYERS:")
+      statistic.foreach(x => reply(x))
+
   }
 }
