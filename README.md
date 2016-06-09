@@ -1,3 +1,4 @@
-# bulls-and-cows-telegrambot
+# Telegram bots
 
-Bulls And Cows GameBot for Telegram
+Bulls And Cows GameBot for Telegram - @BullsCowsGameBot
+Image Getter Bot - @GetImageBot
