@@ -20,7 +20,7 @@ object BullsCowsBot extends TelegramBot with Polling with Commands {
 
   def config: Config = ConfigFactory.load()
 
-  override def token: String = config.getString("token")
+  override def token: String = config.getString("bullsCowsToken")
 
   on("/hello") { implicit msg => args =>
     reply(s"Hello ${msg.from.get.firstName} ${msg.from.get.lastName.getOrElse("")}! Have a nice day!")
@@ -89,7 +89,6 @@ object BullsCowsBot extends TelegramBot with Polling with Commands {
   }
 
   on("/allstat") {
-
     implicit msg => _ =>
       val list: List[AllStat] = CommandHandler.SelectAllGamesFromBD
       val statistic: List[String] = CommandHandler.getAllStat(list)
