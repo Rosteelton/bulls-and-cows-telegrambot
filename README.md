@@ -5,4 +5,4 @@
 |Bulls And Cows Game|@BullsCowsGameBot|
 |Image Getter   |  @GetImasgeBot|
 
-ENJOY!
+CHECK IT & ENJOY!
