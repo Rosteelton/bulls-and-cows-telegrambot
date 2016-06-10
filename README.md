@@ -3,4 +3,6 @@
 |   Bot  | Address |   
 |--------|---------|
 |Bulls And Cows Game|@BullsCowsGameBot|
-|Image Getter   |  @GetImageBot      |
+|Image Getter   |  @GetImasgeBot|
+
+ENJOY!
