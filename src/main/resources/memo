@@ -26,3 +26,21 @@ date DATETIME NOT NULL
 );
 
 ALTER TABLE games ADD userName varchar(50);
+
+
+Mistakes:
+
+Doesn't work because can't use 2 monads:
+
+   val tmp = for {
+      someURL <- URLs
+      if checkURL(someURL)
+      response <- Http().singleRequest(HttpRequest(uri = Uri(someURL)))
+      if response.status.intValue() == 200
+      bytePicture <- Unmarshal(response).to[ByteString]
+    } yield {
+      bytePicture
+    }
+
+
+
